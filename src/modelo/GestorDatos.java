@@ -69,12 +69,12 @@ public class GestorDatos {
                     gamesList.add(new Juego(nombre, precio, imagen));
                 }
             }
-            System.out.println("✓ Juegos cargados: " + gamesList.size() + " juegos");
+            System.out.println("(OK) Juegos cargados: " + gamesList.size() + " juegos");
         } catch (IOException e) {
-            System.err.println("✗ Error al cargar juegos: " + e.getMessage());
+            System.err.println("(ERROR) Error al cargar juegos: " + e.getMessage());
             crearArchivoJuegosPorDefecto();
         } catch (NumberFormatException e) {
-            System.err.println("✗ Error en formato de precio: " + e.getMessage());
+            System.err.println("(ERROR) Error en formato de precio: " + e.getMessage());
         }
     }
 
@@ -101,34 +101,27 @@ public class GestorDatos {
     private void guardarJuegos() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(ARCHIVO_JUEGOS))) {
             // Escribir cabecera explicativa
-            bw.write("# Catálogo de Juegos - Game Store");
-            bw.newLine();
-            bw.write("# Formato: nombre|precio|imagen");
-            bw.newLine();
-            bw.write("# Ejemplo: The Witcher 3|39.99|witcher.jpg");
-            bw.newLine();
-            bw.write("# Puedes editar este archivo manualmente");
-            bw.newLine();
-            bw.newLine();
+            bw.write("# Catálogo de Juegos\n");
+            bw.write("# Formato: nombre|precio|imagen\n");
+            bw.write("# Ejemplo: The Witcher 3|39.99|witcherImg.jpg\n");
+            bw.write("# Se puede y debe editar este archivo manualmente para agregar juegos nuevos\n\n");
 
             // Escribir cada juego
             for (Juego juego : gamesList) {
                 String linea = juego.getName() + "|" +
                         juego.getPrice() + "|" +
                         juego.getImage();
-                bw.write(linea);
-                bw.newLine();
+                bw.write(linea + "\n");
             }
 
-            System.out.println("✓ Archivo de juegos creado: " + ARCHIVO_JUEGOS);
+            System.out.println("(OK) Archivo de juegos creado: " + ARCHIVO_JUEGOS);
         } catch (IOException e) {
-            System.err.println("✗ Error al guardar juegos: " + e.getMessage());
+            System.err.println("(ERROR) Error al guardar juegos: " + e.getMessage());
         }
     }
     //endregion
 
-    // ==================== GESTIÓN DE USUARIOS (DAT) ====================
-
+    //region GESTIÓN DE USUARIOS (DAT)
     /**
      * Carga usuarios desde archivo binario
      */
@@ -136,16 +129,16 @@ public class GestorDatos {
         File archivo = new File(ARCHIVO_USUARIOS);
 
         if (!archivo.exists()) {
-            System.out.println("⚠ Archivo de usuarios no existe. Creando usuario de prueba...");
+            System.out.println("(ADVERTENCIA) Archivo de usuarios no existe. Creando 1 usuario de prueba...");
             crearUsuarioPrueba();
             return;
         }
 
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
             usersList = (List<Usuario>) ois.readObject();
-            System.out.println("✓ Usuarios cargados: " + usersList.size() + " usuarios");
+            System.out.println("(OK) Usuarios cargados: " + usersList.size() + " usuarios");
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("✗ Error al cargar usuarios: " + e.getMessage());
+            System.err.println("(ERROR) Error al cargar usuarios: " + e.getMessage());
             crearUsuarioPrueba();
         }
     }
@@ -157,7 +150,7 @@ public class GestorDatos {
         Usuario usuarioPrueba = new Usuario("a@gmail.com", "1234");
         usersList.add(usuarioPrueba);
         guardarUsuarios();
-        System.out.println("✓ Usuario de prueba creado: a@gmail.com / 1234");
+        System.out.println("(OK) Usuario de prueba creado: a@gmail.com / 1234");
     }
 
     /**
@@ -166,30 +159,52 @@ public class GestorDatos {
     private void guardarUsuarios() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ARCHIVO_USUARIOS))) {
             oos.writeObject(usersList);
-            System.out.println("✓ Usuarios guardados correctamente");
+            System.out.println("(OK) Usuarios guardados correctamente");
         } catch (IOException e) {
-            System.err.println("✗ Error al guardar usuarios: " + e.getMessage());
+            System.err.println("(ERROR) Error al guardar usuarios: " + e.getMessage());
             e.printStackTrace();
         }
     }
+    //endregion
 
-    // ==================== MÉTODOS PÚBLICOS ====================
+    //region MÉTODOS PÚBLICOS
 
-    public List<Juego> getCatalogoJuegos() {
+    /**
+     * Devuelve la lista de juegos cargados en el programa
+     * @return lista de obejtos de tipo Juego
+     */
+    public List<Juego> getGamesList() {
         return new ArrayList<>(gamesList);
     }
 
+    /**
+     * Devuelve un Usuario cuyo email y pwd
+     * coincida con los registrados en el sistema
+     * @param email
+     * @param password
+     * @return Usuario registrado en el sistema o null si no existe en los registros
+     */
     public Usuario buscarUsuario(String email, String password) {
-        return usersList.stream()
-                .filter(u -> u.getEmail().equals(email) &&
-                        u.getPassword().equals(password))
-                .findFirst()
-                .orElse(null);
+        for (Usuario u : usersList) {
+            if (u.getEmail().equals(email) && u.getPassword().equals(password)) {
+                return u;
+            }
+        }
+        return null;
     }
 
+    /**
+     * Devuelve si existe o no un usuario con el correo seleccionado
+     * @param email
+     * @return true / false
+     */
     public boolean existeUsuario(String email) {
-        return usersList.stream()
-                .anyMatch(u -> u.getEmail().equals(email));
+        for (Usuario u : usersList) {
+            if (u.getEmail().equals(email)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -206,15 +221,8 @@ public class GestorDatos {
      */
     public void actualizarUsuario(Usuario usuario) {
         // El usuario ya está en la lista por referencia
-        // Solo necesitamos guardar
+        // Solo necesito guardar, esto machacará los datos antiguos
         guardarUsuarios();
     }
-
-    /**
-     * Método público para guardar datos (llamar al cerrar la app)
-     */
-    public void guardarDatos() {
-        guardarUsuarios();
-        System.out.println("→ Guardado final completado");
-    }
+    //endregion
 }

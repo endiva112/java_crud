@@ -63,7 +63,7 @@ public class ControladorPrincipal {
             mostrarLogin();
             return;
         }
-        homePanel.cargarJuegos(gestorDatos.getCatalogoJuegos());
+        homePanel.cargarJuegos(gestorDatos.getGamesList());
         ventana.mostrarPanel(homePanel);
     }
 
