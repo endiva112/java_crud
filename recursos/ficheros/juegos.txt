@@ -1,0 +1,14 @@
+# Catálogo de Juegos
+# Formato: nombre|precio|imagen
+# Ejemplo: The Witcher 3|39.99|witcher.jpg
+# Se puede y debe editar este archivo manualmente para agregar juegos nuevos
+
+The Witcher 3|39.99|silksongImg.jpg
+Cyberpunk 2077|59.99|silksongImg.jpg
+Red Dead Redemption 2|49.99|silksongImg.jpg
+GTA V|29.99|gta5Img.jpg
+Minecraft|26.99|silksongImg.jpg
+Elden Ring|59.99|silksongImg.jpg
+Hogwarts Legacy|69.99|silksongImg.jpg
+God of War|49.99|silksongImg.jpg
+
