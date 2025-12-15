@@ -221,7 +221,7 @@ public class GestorDatos {
      */
     public void actualizarUsuario(Usuario usuario) {
         // El usuario ya está en la lista por referencia
-        // Solo necesito guardar, esto machacará los datos antiguos
+        // Solo necesito guardarlo en el fichero, esto machacará los datos antiguos
         guardarUsuarios();
     }
     //endregion

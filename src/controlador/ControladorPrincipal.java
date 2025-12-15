@@ -10,10 +10,10 @@ import javax.swing.*;
 public class ControladorPrincipal {
     // Modelo
     private GestorDatos gestorDatos;
-    private Usuario usuarioActual;
+    private Usuario currentUser;
 
     // Vista
-    private VentanaPrincipal ventana;
+    private VentanaPrincipal mainFrame;
     private LoginPanel loginPanel;
     private RegisterPanel registerPanel;
     private HomePanel homePanel;
@@ -21,13 +21,16 @@ public class ControladorPrincipal {
     private MyListPanel myListPanel;
     private ProductPanel productPanel;
 
+    /**
+     * Constructor, aquí se lanzan Modelo, Vista y se le pasa el Controlador a las vistas
+     */
     public ControladorPrincipal() {
         // 1. Inicializar modelo
         gestorDatos = new GestorDatos();
-        usuarioActual = null;
+        currentUser = null;
 
         // 2. Inicializar ventana
-        ventana = new VentanaPrincipal();
+        mainFrame = new VentanaPrincipal();
 
         // 3. Inicializar paneles (todos reciben this)
         loginPanel = new LoginPanel(this);
@@ -43,63 +46,62 @@ public class ControladorPrincipal {
 
     private void iniciarAplicacion() {
         mostrarLogin();
-        ventana.setVisible(true);
+        mainFrame.setVisible(true);
     }
 
-    // ==================== NAVEGACIÓN ====================
-
+    //region NAVEGACIÓN
     public void mostrarLogin() {
-        ventana.mostrarPanel(loginPanel);
+        mainFrame.mostrarPanel(loginPanel);
         loginPanel.limpiarCampos();
     }
 
     public void mostrarRegister() {
-        ventana.mostrarPanel(registerPanel);
+        mainFrame.mostrarPanel(registerPanel);
         registerPanel.limpiarCampos();
     }
 
     public void mostrarHome() {
-        if (usuarioActual == null) {
+        if (currentUser == null) {
             mostrarLogin();
             return;
         }
         homePanel.cargarJuegos(gestorDatos.getGamesList());
-        ventana.mostrarPanel(homePanel);
+        mainFrame.mostrarPanel(homePanel);
     }
 
     public void mostrarAccount() {
-        if (usuarioActual == null) {
+        if (currentUser == null) {
             mostrarLogin();
             return;
         }
-        accountPanel.cargarDatosUsuario(usuarioActual);
-        ventana.mostrarPanel(accountPanel);
+        accountPanel.cargarDatosUsuario(currentUser);
+        mainFrame.mostrarPanel(accountPanel);
     }
 
     public void mostrarMyList() {
-        if (usuarioActual == null) {
+        if (currentUser == null) {
             mostrarLogin();
             return;
         }
-        myListPanel.cargarLista(usuarioActual.getMyShoppingList());
-        ventana.mostrarPanel(myListPanel);
+        myListPanel.cargarLista(currentUser.getMyShoppingList());
+        mainFrame.mostrarPanel(myListPanel);
     }
 
     public void mostrarProduct(Juego juego) {
-        if (usuarioActual == null) {
+        if (currentUser == null) {
             mostrarLogin();
             return;
         }
-        boolean enLista = usuarioActual.tieneJuegoEnLista(juego);
+        boolean enLista = currentUser.tieneJuegoEnLista(juego);
         productPanel.cargarProducto(juego, enLista);
-        ventana.mostrarPanel(productPanel);
+        mainFrame.mostrarPanel(productPanel);
     }
+    //endregion
 
-    // ==================== LÓGICA DE LOGIN ====================
-
+    //region LÓGICA DE LOGIN
     public void intentarLogin(String email, String password) {
         if (email.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(ventana,
+            JOptionPane.showMessageDialog(mainFrame,
                     "Por favor, completa todos los campos",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -107,34 +109,34 @@ public class ControladorPrincipal {
 
         Usuario usuario = gestorDatos.buscarUsuario(email, password);
         if (usuario != null) {
-            usuarioActual = usuario;
+            currentUser = usuario;
             mostrarHome();
         } else {
-            JOptionPane.showMessageDialog(ventana,
+            JOptionPane.showMessageDialog(mainFrame,
                     "Email o contraseña incorrectos",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    //endregion
 
-    // ==================== LÓGICA DE REGISTRO ====================
-
+    //region LÓGICA DE REGISTRO
     public void intentarRegistro(String email, String password, boolean acceptTerms) {
         if (email.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(ventana,
+            JOptionPane.showMessageDialog(mainFrame,
                     "Por favor, completa todos los campos",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         if (!acceptTerms) {
-            JOptionPane.showMessageDialog(ventana,
+            JOptionPane.showMessageDialog(mainFrame,
                     "Debes aceptar los términos y condiciones",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         if (gestorDatos.existeUsuario(email)) {
-            JOptionPane.showMessageDialog(ventana,
+            JOptionPane.showMessageDialog(mainFrame,
                     "Ya existe un usuario con ese email",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -142,65 +144,66 @@ public class ControladorPrincipal {
 
         Usuario nuevoUsuario = new Usuario(email, password);
         gestorDatos.registrarUsuario(nuevoUsuario);
-        usuarioActual = nuevoUsuario;
+        currentUser = nuevoUsuario;
 
-        JOptionPane.showMessageDialog(ventana,
+        JOptionPane.showMessageDialog(mainFrame,
                 "¡Registro exitoso!",
                 "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
         mostrarHome();
     }
+    //endregion
 
-    // ==================== LÓGICA DE CUENTA ====================
-
+    //region LÓGICA DE CUENTA / SESIÓN
     public void actualizarCuenta(String nuevoEmail, String nuevaPassword, String avatar) {
-        if (usuarioActual == null) return;
+        if (currentUser == null) return;
 
         if (!nuevoEmail.isEmpty()) {
-            usuarioActual.setEmail(nuevoEmail);
+            currentUser.setEmail(nuevoEmail);
         }
 
         if (!nuevaPassword.isEmpty()) {
-            usuarioActual.setPassword(nuevaPassword);
+            currentUser.setPassword(nuevaPassword);
         }
 
-        if (avatar != null) {
-            usuarioActual.setAvatar(avatar);
+        if (avatar != null) {//TODO implementar, no voy a hacerlo por falta de tiempo y de ganas
+            currentUser.setAvatar(avatar);
         }
 
-        gestorDatos.actualizarUsuario(usuarioActual);
+        gestorDatos.actualizarUsuario(currentUser);
 
-        JOptionPane.showMessageDialog(ventana,
+        JOptionPane.showMessageDialog(mainFrame,
                 "Datos actualizados correctamente",
                 "Éxito", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void cerrarSesion() {
-        usuarioActual = null;
+        currentUser = null;
         mostrarLogin();
     }
+    //endregion
 
-    // ==================== LÓGICA DE LISTA ====================
-
+    //region LÓGICA DE LISTA
     public void toggleJuegoEnLista(Juego juego) {
-        if (usuarioActual == null) return;
+        if (currentUser == null) return;
 
-        if (usuarioActual.tieneJuegoEnLista(juego)) {
-            usuarioActual.eliminarJuegoDeLista(juego);
+        if (currentUser.tieneJuegoEnLista(juego)) {
+            currentUser.eliminarJuegoDeLista(juego);
         } else {
-            usuarioActual.agregarJuegoALista(juego);
+            currentUser.agregarJuegoALista(juego);
         }
 
-        gestorDatos.actualizarUsuario(usuarioActual);
+        gestorDatos.actualizarUsuario(currentUser);
     }
 
     public void eliminarJuegoDeLista(int index) {
-        if (usuarioActual == null) return;
+        if (currentUser == null) return;
 
-        usuarioActual.eliminarJuegoDeLista(index);
-        gestorDatos.actualizarUsuario(usuarioActual);
+        currentUser.eliminarJuegoDeLista(index);
+        gestorDatos.actualizarUsuario(currentUser);
 
         // Recargar la vista
         mostrarMyList();
     }
+    //endregion
 }
