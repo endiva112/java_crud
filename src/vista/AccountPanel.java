@@ -68,6 +68,13 @@ public class AccountPanel extends JPanel {
         gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
         centerPanel.add(btnActualizar, gbc);
 
+        // Botón eliminar cuenta
+        JButton btnEliminar = new JButton("Eliminar Cuenta");
+        btnEliminar.setForeground(Color.RED);
+        btnEliminar.addActionListener(e -> controlador.eliminarCuenta());
+        gbc.gridy = 5;
+        centerPanel.add(btnEliminar, gbc);
+
         add(centerPanel, BorderLayout.CENTER);
     }
 

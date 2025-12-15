@@ -165,6 +165,15 @@ public class GestorDatos {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Elimina un usuario y guarda los cambios
+     */
+    public void eliminarUsuario(Usuario usuario) {
+        usersList.remove(usuario);
+        guardarUsuarios();
+        System.out.println("→ Usuario eliminado: " + usuario.getEmail());
+    }
     //endregion
 
     //region MÉTODOS PÚBLICOS

@@ -181,6 +181,32 @@ public class ControladorPrincipal {
         currentUser = null;
         mostrarLogin();
     }
+
+    public void eliminarCuenta() {
+        if (currentUser == null) return;
+
+        int confirmacion = JOptionPane.showConfirmDialog(
+                mainFrame,
+                "¿Estás seguro de que deseas eliminar tu cuenta?\nEsta acción no se puede deshacer.",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            gestorDatos.eliminarUsuario(currentUser);
+            currentUser = null;
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Cuenta eliminada exitosamente",
+                    "Cuenta eliminada",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
+            mostrarLogin();
+        }
+    }
     //endregion
 
     //region LÓGICA DE LISTA

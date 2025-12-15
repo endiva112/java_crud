@@ -21,7 +21,7 @@ public class HomePanel extends JPanel {
     private void inicializarComponentes() {
         setLayout(new BorderLayout());
 
-        // ✅ Usar la NavBar reutilizable
+        // Usar la NavBar reutilizable
         add(new Cabecera(controlador), BorderLayout.NORTH);
 
         // Panel central (filtro + juegos)
