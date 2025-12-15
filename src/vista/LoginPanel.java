@@ -25,7 +25,7 @@ public class LoginPanel extends JPanel {
         Color secondaryText = new Color(0, 0, 0);
 
         // Logo
-        URL url = LoginPanel.class.getResource("/logo.png");
+        URL url = LoginPanel.class.getResource("/imagenes/logo.png");
         ImageIcon loginIcon = new ImageIcon(url);
         Image img = loginIcon.getImage().getScaledInstance(220, 40, Image.SCALE_SMOOTH);
         loginIcon = new ImageIcon(img);
@@ -142,7 +142,13 @@ public class LoginPanel extends JPanel {
         rightCenterPanel.setBackground(panelBG);
         rightCenterPanel.setLayout(new BoxLayout(rightCenterPanel, BoxLayout.Y_AXIS));
 
-        JLabel qrImage = new JLabel(new ImageIcon("recursos/imagenes/logo.png"));
+        // QR imagen
+        URL urlQR = LoginPanel.class.getResource("/imagenes/QRImg.png");
+        ImageIcon QRIcon = new ImageIcon(urlQR);
+        Image imgQR = QRIcon.getImage().getScaledInstance(220, 220, Image.SCALE_SMOOTH);
+        QRIcon = new ImageIcon(imgQR);
+
+        JLabel qrImage = new JLabel(QRIcon);
         qrImage.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel qrText = new JLabel("Usa el QR para registrarte (obviamente, no funciona)");
