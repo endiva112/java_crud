@@ -2,6 +2,8 @@ package vista;
 
 import controlador.ControladorPrincipal;
 import modelo.Juego;
+import vista.componentes.Cabecera;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -21,20 +23,8 @@ public class ProductPanel extends JPanel {
     private void inicializarComponentes() {
         setLayout(new BorderLayout());
 
-        // Panel superior (navegación)
-        JPanel topPanel = new JPanel();
-        JButton btnHome = new JButton("Home");
-        btnHome.addActionListener(e -> controlador.mostrarHome());
-        JButton btnMyList = new JButton("Mi Lista");
-        btnMyList.addActionListener(e -> controlador.mostrarMyList());
-        JButton btnAccount = new JButton("Cuenta");
-        btnAccount.addActionListener(e -> controlador.mostrarAccount());
-
-        topPanel.add(btnHome);
-        topPanel.add(btnMyList);
-        topPanel.add(btnAccount);
-
-        add(topPanel, BorderLayout.NORTH);
+        // Usar la NavBar reutilizable
+        add(new Cabecera(controlador), BorderLayout.NORTH);
 
         // Panel central (detalles del juego)
         JPanel centerPanel = new JPanel(new GridBagLayout());
@@ -79,15 +69,13 @@ public class ProductPanel extends JPanel {
         precioLabel.setText("Precio: $" + juego.getPrice());
 
         // Cargar imagen
-        String rutaImagen = "recursos/imagenes/" + juego.getImage(); // Ajusta la ruta según tu proyecto
+        String rutaImagen = "recursos/imagenes/" + juego.getImage();
         ImageIcon icon = new ImageIcon(rutaImagen);
-        // Escalar imagen al tamaño del JLabel
         Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         imagenLabel.setIcon(new ImageIcon(img));
-        imagenLabel.setText(null); // quitar el texto
+        imagenLabel.setText(null);
 
-        // Importante: quitar el listener antes de cambiar el estado
-        // para evitar que se dispare el evento
+        // Actualizar checkbox
         enListaCheckBox.removeActionListener(enListaCheckBox.getActionListeners()[0]);
         enListaCheckBox.setSelected(enLista);
         enListaCheckBox.addActionListener(e -> {

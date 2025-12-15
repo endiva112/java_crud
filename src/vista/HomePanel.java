@@ -2,6 +2,8 @@ package vista;
 
 import controlador.ControladorPrincipal;
 import modelo.Juego;
+import vista.componentes.Cabecera;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
@@ -19,25 +21,13 @@ public class HomePanel extends JPanel {
     private void inicializarComponentes() {
         setLayout(new BorderLayout());
 
-        // Panel superior (navegación)
-        JPanel topPanel = new JPanel();
-        JButton btnHome = new JButton("Home");
-        btnHome.addActionListener(e -> controlador.mostrarHome());
-        JButton btnMyList = new JButton("Mi Lista");
-        btnMyList.addActionListener(e -> controlador.mostrarMyList());
-        JButton btnAccount = new JButton("Cuenta");
-        btnAccount.addActionListener(e -> controlador.mostrarAccount());
-
-        topPanel.add(btnHome);
-        topPanel.add(btnMyList);
-        topPanel.add(btnAccount);
-
-        add(topPanel, BorderLayout.NORTH);
+        // ✅ Usar la NavBar reutilizable
+        add(new Cabecera(controlador), BorderLayout.NORTH);
 
         // Panel central (filtro + juegos)
         JPanel centerPanel = new JPanel(new BorderLayout());
 
-        // Filtro (solo visual por ahora)
+        // Filtro
         JPanel filtroPanel = new JPanel();
         filtroPanel.add(new JLabel("Buscar:"));
         filtroField = new JTextField(20);

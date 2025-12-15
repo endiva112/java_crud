@@ -2,6 +2,8 @@ package vista;
 
 import controlador.ControladorPrincipal;
 import modelo.Usuario;
+import vista.componentes.Cabecera;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,7 +12,6 @@ public class AccountPanel extends JPanel {
     private JTextField emailField;
     private JPasswordField passwordField;
     private JLabel avatarLabel;
-    private String avatarPath;
 
     public AccountPanel(ControladorPrincipal controlador) {
         this.controlador = controlador;
@@ -20,40 +21,25 @@ public class AccountPanel extends JPanel {
     private void inicializarComponentes() {
         setLayout(new BorderLayout());
 
-        // Panel superior (navegación)
-        JPanel topPanel = new JPanel();
-        JButton btnHome = new JButton("Home");
-        btnHome.addActionListener(e -> controlador.mostrarHome());
-        JButton btnMyList = new JButton("Mi Lista");
-        btnMyList.addActionListener(e -> controlador.mostrarMyList());
-        JButton btnAccount = new JButton("Cuenta");
-        btnAccount.addActionListener(e -> controlador.mostrarAccount());
-        JButton btnLogout = new JButton("Cerrar Sesión");
-        btnLogout.addActionListener(e -> controlador.cerrarSesion());
-
-        topPanel.add(btnHome);
-        topPanel.add(btnMyList);
-        topPanel.add(btnAccount);
-        topPanel.add(btnLogout);
-
-        add(topPanel, BorderLayout.NORTH);
+        // Usar la NavBar reutilizable CON logout
+        add(new Cabecera(controlador, true), BorderLayout.NORTH);
 
         // Panel central (datos)
         JPanel centerPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        // Avatar
+        // Avatar por defecto
         gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
-        avatarLabel = new JLabel("Sin avatar");
+        avatarLabel = new JLabel();
         avatarLabel.setPreferredSize(new Dimension(100, 100));
         avatarLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        ImageIcon icon = new ImageIcon("recursos/imagenes/userIcon.png");
+        Image img = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        avatarLabel.setIcon(new ImageIcon(img));
         centerPanel.add(avatarLabel, gbc);
 
-        JButton btnSeleccionarAvatar = new JButton("Seleccionar Avatar");
-        btnSeleccionarAvatar.addActionListener(e -> seleccionarAvatar());
-        gbc.gridy = 1;
-        centerPanel.add(btnSeleccionarAvatar, gbc);
+        // TODO: Implementar funcionalidad para cambiar avatar (JFileChooser)
 
         // Email
         gbc.gridwidth = 1;
@@ -77,7 +63,7 @@ public class AccountPanel extends JPanel {
         btnActualizar.addActionListener(e -> {
             String email = emailField.getText();
             String password = new String(passwordField.getPassword());
-            controlador.actualizarCuenta(email, password, avatarPath);
+            controlador.actualizarCuenta(email, password, null);
         });
         gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
         centerPanel.add(btnActualizar, gbc);
@@ -85,23 +71,8 @@ public class AccountPanel extends JPanel {
         add(centerPanel, BorderLayout.CENTER);
     }
 
-    private void seleccionarAvatar() {
-        JFileChooser fileChooser = new JFileChooser();
-        int result = fileChooser.showOpenDialog(this);
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-            avatarPath = fileChooser.getSelectedFile().getAbsolutePath();
-            avatarLabel.setText("Avatar seleccionado");
-        }
-    }
-
     public void cargarDatosUsuario(Usuario usuario) {
         emailField.setText(usuario.getEmail());
         passwordField.setText("");
-
-        if (usuario.getAvatar() != null) {
-            avatarLabel.setText("Avatar: " + usuario.getAvatar());
-            avatarPath = usuario.getAvatar();
-        }
     }
 }
