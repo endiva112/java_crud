@@ -12,12 +12,12 @@ public class GestorDatos {
     private static final String ARCHIVO_USUARIOS = RUTA_FICHEROS + "usuarios.dat";
     private static final String ARCHIVO_JUEGOS = RUTA_FICHEROS + "juegos.txt";
 
-    private List<Usuario> usuarios;
-    private List<Juego> catalogoJuegos;
+    private List<Usuario> usersList;
+    private List<Juego> gamesList;
 
     public GestorDatos() {
-        this.usuarios = new ArrayList<>();
-        this.catalogoJuegos = new ArrayList<>();
+        this.usersList = new ArrayList<>();
+        this.gamesList = new ArrayList<>();
         crearDirectoriosSiNoExisten();
         cargarJuegos();
         cargarUsuarios();
@@ -30,13 +30,12 @@ public class GestorDatos {
         File directorio = new File(RUTA_FICHEROS);
         if (!directorio.exists()) {
             if (directorio.mkdirs()) {
-                System.out.println("✓ Directorio creado: " + RUTA_FICHEROS);
+                System.out.println("(OK) Directorio creado: " + RUTA_FICHEROS);
             }
         }
     }
 
-    // ==================== GESTIÓN DE JUEGOS (TXT) ====================
-
+    //region GESTIÓN DE JUEGOS (TXT)
     /**
      * Carga juegos desde archivo de texto
      * Formato: nombre|precio|imagen
@@ -45,7 +44,7 @@ public class GestorDatos {
         File archivo = new File(ARCHIVO_JUEGOS);
 
         if (!archivo.exists()) {
-            System.out.println("⚠ Archivo de juegos no existe. Creando uno nuevo...");
+            System.out.println("(ADVERTENCIA) Archivo de juegos no existe. Creando uno nuevo...");
             crearArchivoJuegosPorDefecto();
             return;
         }
@@ -67,10 +66,10 @@ public class GestorDatos {
                     double precio = Double.parseDouble(partes[1].trim());
                     String imagen = partes[2].trim();
 
-                    catalogoJuegos.add(new Juego(nombre, precio, imagen));
+                    gamesList.add(new Juego(nombre, precio, imagen));
                 }
             }
-            System.out.println("✓ Juegos cargados: " + catalogoJuegos.size() + " juegos");
+            System.out.println("✓ Juegos cargados: " + gamesList.size() + " juegos");
         } catch (IOException e) {
             System.err.println("✗ Error al cargar juegos: " + e.getMessage());
             crearArchivoJuegosPorDefecto();
@@ -83,15 +82,15 @@ public class GestorDatos {
      * Crea el archivo de juegos con datos por defecto
      */
     private void crearArchivoJuegosPorDefecto() {
-        catalogoJuegos.clear();
-        catalogoJuegos.add(new Juego("The Witcher 3", 39.99, "witcher.jpg"));
-        catalogoJuegos.add(new Juego("Cyberpunk 2077", 59.99, "cyberpunk.jpg"));
-        catalogoJuegos.add(new Juego("Red Dead Redemption 2", 49.99, "rdr2.jpg"));
-        catalogoJuegos.add(new Juego("GTA V", 29.99, "gta5.jpg"));
-        catalogoJuegos.add(new Juego("Minecraft", 26.99, "minecraft.jpg"));
-        catalogoJuegos.add(new Juego("Elden Ring", 59.99, "eldenring.jpg"));
-        catalogoJuegos.add(new Juego("Hogwarts Legacy", 69.99, "hogwarts.jpg"));
-        catalogoJuegos.add(new Juego("God of War", 49.99, "gow.jpg"));
+        gamesList.clear();
+        gamesList.add(new Juego("The Witcher 3", 39.99, "witcherImg.jpg"));
+        gamesList.add(new Juego("Cyberpunk 2077", 59.99, "cyberpunkImg.jpg"));
+        gamesList.add(new Juego("Red Dead Redemption 2", 49.99, "rdr2Img.jpg"));
+        gamesList.add(new Juego("GTA V", 29.99, "gta5Img.jpg"));
+        gamesList.add(new Juego("Minecraft", 26.99, "minecraftImg.jpg"));
+        gamesList.add(new Juego("Elden Ring", 59.99, "eldenringImg.jpg"));
+        gamesList.add(new Juego("Hogwarts Legacy", 69.99, "hogwartsImg.jpg"));
+        gamesList.add(new Juego("Hollow Knight - Silksong", 14.99, "silksongImg.jpg"));
 
         guardarJuegos();
     }
@@ -113,7 +112,7 @@ public class GestorDatos {
             bw.newLine();
 
             // Escribir cada juego
-            for (Juego juego : catalogoJuegos) {
+            for (Juego juego : gamesList) {
                 String linea = juego.getName() + "|" +
                         juego.getPrice() + "|" +
                         juego.getImage();
@@ -126,6 +125,7 @@ public class GestorDatos {
             System.err.println("✗ Error al guardar juegos: " + e.getMessage());
         }
     }
+    //endregion
 
     // ==================== GESTIÓN DE USUARIOS (DAT) ====================
 
@@ -142,8 +142,8 @@ public class GestorDatos {
         }
 
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
-            usuarios = (List<Usuario>) ois.readObject();
-            System.out.println("✓ Usuarios cargados: " + usuarios.size() + " usuarios");
+            usersList = (List<Usuario>) ois.readObject();
+            System.out.println("✓ Usuarios cargados: " + usersList.size() + " usuarios");
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("✗ Error al cargar usuarios: " + e.getMessage());
             crearUsuarioPrueba();
@@ -155,7 +155,7 @@ public class GestorDatos {
      */
     private void crearUsuarioPrueba() {
         Usuario usuarioPrueba = new Usuario("a@gmail.com", "1234");
-        usuarios.add(usuarioPrueba);
+        usersList.add(usuarioPrueba);
         guardarUsuarios();
         System.out.println("✓ Usuario de prueba creado: a@gmail.com / 1234");
     }
@@ -165,7 +165,7 @@ public class GestorDatos {
      */
     private void guardarUsuarios() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ARCHIVO_USUARIOS))) {
-            oos.writeObject(usuarios);
+            oos.writeObject(usersList);
             System.out.println("✓ Usuarios guardados correctamente");
         } catch (IOException e) {
             System.err.println("✗ Error al guardar usuarios: " + e.getMessage());
@@ -176,11 +176,11 @@ public class GestorDatos {
     // ==================== MÉTODOS PÚBLICOS ====================
 
     public List<Juego> getCatalogoJuegos() {
-        return new ArrayList<>(catalogoJuegos);
+        return new ArrayList<>(gamesList);
     }
 
     public Usuario buscarUsuario(String email, String password) {
-        return usuarios.stream()
+        return usersList.stream()
                 .filter(u -> u.getEmail().equals(email) &&
                         u.getPassword().equals(password))
                 .findFirst()
@@ -188,7 +188,7 @@ public class GestorDatos {
     }
 
     public boolean existeUsuario(String email) {
-        return usuarios.stream()
+        return usersList.stream()
                 .anyMatch(u -> u.getEmail().equals(email));
     }
 
@@ -196,7 +196,7 @@ public class GestorDatos {
      * Registra un nuevo usuario y guarda inmediatamente
      */
     public void registrarUsuario(Usuario usuario) {
-        usuarios.add(usuario);
+        usersList.add(usuario);
         guardarUsuarios();
         System.out.println("→ Usuario registrado: " + usuario.getEmail());
     }

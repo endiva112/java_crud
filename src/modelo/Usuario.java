@@ -8,16 +8,16 @@ public class Usuario implements Serializable {
     private String email;
     private String password;
     private String avatar; // ruta de la imagen
-    private List<Juego> miListaDeJuegos;
+    private List<Juego> myShoppingList;
 
     public Usuario(String email, String password) {
         this.email = email;
         this.password = password;
         this.avatar = null; // por defecto sin avatar
-        this.miListaDeJuegos = new ArrayList<>();
+        this.myShoppingList = new ArrayList<>();
     }
 
-    // Getters y Setters
+    //region Getters y Setters
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
@@ -27,27 +27,38 @@ public class Usuario implements Serializable {
     public String getAvatar() { return avatar; }
     public void setAvatar(String avatar) { this.avatar = avatar; }
 
-    public List<Juego> getMiListaDeJuegos() { return miListaDeJuegos; }
+    public List<Juego> getMyShoppingList() { return myShoppingList; }
+    //endregion
 
-    // Lógica de negocio
+    //region Lógica de negocio
     public boolean tieneJuegoEnLista(Juego juego) {
-        return miListaDeJuegos.stream()
-                .anyMatch(j -> j.getName().equals(juego.getName()));
+        for (Juego j : myShoppingList) {
+            if (j.getName().equals(juego.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void agregarJuegoALista(Juego juego) {
         if (!tieneJuegoEnLista(juego)) {
-            miListaDeJuegos.add(juego);
+            myShoppingList.add(juego);
         }
     }
 
     public void eliminarJuegoDeLista(Juego juego) {
-        miListaDeJuegos.removeIf(j -> j.getName().equals(juego.getName()));
+        for (int i = 0; i < myShoppingList.size(); i++) {
+            if (myShoppingList.get(i).getName().equals(juego.getName())) {
+                myShoppingList.remove(i);
+                break; // Salir del bucle, el jeugo ya está borrado de la lista
+            }
+        }
     }
 
     public void eliminarJuegoDeLista(int index) {
-        if (index >= 0 && index < miListaDeJuegos.size()) {
-            miListaDeJuegos.remove(index);
+        if (index >= 0 && index < myShoppingList.size()) {
+            myShoppingList.remove(index);
         }
     }
+    //endregion
 }

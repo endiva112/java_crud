@@ -81,7 +81,7 @@ public class ControladorPrincipal {
             mostrarLogin();
             return;
         }
-        myListPanel.cargarLista(usuarioActual.getMiListaDeJuegos());
+        myListPanel.cargarLista(usuarioActual.getMyShoppingList());
         ventana.mostrarPanel(myListPanel);
     }
 
