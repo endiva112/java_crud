@@ -77,10 +77,9 @@ public class Cabecera extends JPanel {
         URL urlUser = Cabecera.class.getResource("/imagenes/icons/userIcon.png");
         ImageIcon userIcon = new ImageIcon(urlUser);
         Image imgUser = userIcon.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+        userIcon = new ImageIcon(imgUser);
 
-        // Crear imagen redonda
-        ImageIcon roundedIcon = createRoundedIcon(imgUser, 32);
-        btnAccount.setIcon(roundedIcon);
+        btnAccount.setIcon(userIcon);
 
         btnAccount.setFont(new Font("Roboto", Font.BOLD, 16));
         btnAccount.setForeground(secondaryText);
@@ -97,23 +96,5 @@ public class Cabecera extends JPanel {
 
         add(leftPanel);
         add(rightPanel);
-    }
-
-    /**
-     * Crea un icono redondo a partir de una imagen
-     */
-    private ImageIcon createRoundedIcon(Image img, int diameter) {
-        java.awt.image.BufferedImage rounded = new java.awt.image.BufferedImage(
-                diameter, diameter, java.awt.image.BufferedImage.TYPE_INT_ARGB
-        );
-
-        Graphics2D g2 = rounded.createGraphics();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        g2.setClip(new java.awt.geom.Ellipse2D.Float(0, 0, diameter, diameter));
-        g2.drawImage(img, 0, 0, diameter, diameter, null);
-        g2.dispose();
-
-        return new ImageIcon(rounded);
     }
 }
