@@ -29,8 +29,8 @@ public class AccountPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        // Cabecera
-        add(new Cabecera(controlador, true), BorderLayout.NORTH);
+        // Cabecera (sin logout)
+        add(new Cabecera(controlador), BorderLayout.NORTH);
 
         // Panel central
         JPanel centerPanel = new JPanel(new GridBagLayout());
@@ -39,7 +39,7 @@ public class AccountPanel extends JPanel {
         JPanel mainCenterPanel = new JPanel();
         mainCenterPanel.setBackground(panelBG);
         mainCenterPanel.setLayout(new BoxLayout(mainCenterPanel, BoxLayout.Y_AXIS));
-        mainCenterPanel.setPreferredSize(new Dimension(500, 500));
+        mainCenterPanel.setPreferredSize(new Dimension(500, 550));
 
         JLabel title = new JLabel("Mi Cuenta");
         title.setFont(new Font("Roboto", Font.BOLD, 32));
@@ -104,6 +104,18 @@ public class AccountPanel extends JPanel {
         btnEliminar.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnEliminar.addActionListener(e -> controlador.eliminarCuenta());
 
+        JButton btnCerrarSesion = new JButton("Cerrar Sesión");
+        btnCerrarSesion.setFont(new Font("Roboto", Font.BOLD, 18));
+        btnCerrarSesion.setForeground(Color.WHITE);
+        btnCerrarSesion.setBackground(new Color(100, 100, 100));
+        btnCerrarSesion.setFocusPainted(false);
+        btnCerrarSesion.setBorderPainted(false);
+        btnCerrarSesion.setOpaque(true);
+        btnCerrarSesion.setPreferredSize(new Dimension(360, 50));
+        btnCerrarSesion.setMaximumSize(new Dimension(360, 50));
+        btnCerrarSesion.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnCerrarSesion.addActionListener(e -> controlador.cerrarSesion());
+
         mainCenterPanel.add(Box.createVerticalStrut(30));
         mainCenterPanel.add(title);
         mainCenterPanel.add(Box.createVerticalStrut(20));
@@ -118,6 +130,8 @@ public class AccountPanel extends JPanel {
         mainCenterPanel.add(passwordField);
         mainCenterPanel.add(Box.createVerticalStrut(30));
         mainCenterPanel.add(btnActualizar);
+        mainCenterPanel.add(Box.createVerticalStrut(15));
+        mainCenterPanel.add(btnCerrarSesion);
         mainCenterPanel.add(Box.createVerticalStrut(15));
         mainCenterPanel.add(btnEliminar);
 

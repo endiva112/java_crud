@@ -1,43 +1,119 @@
 package vista.componentes;
+
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 import controlador.ControladorPrincipal;
 
 public class Cabecera extends JPanel {
     private ControladorPrincipal controlador;
 
-    // Constructor básico (Home, Mi Lista, Cuenta)
     public Cabecera(ControladorPrincipal controlador) {
-        this(controlador, false);
-    }
-
-    // Constructor con opción de mostrar botón de Logout
-    public Cabecera(ControladorPrincipal controlador, boolean mostrarLogout) {
         this.controlador = controlador;
-        inicializarComponentes(mostrarLogout);
+        inicializarComponentes();
     }
 
-    private void inicializarComponentes(boolean mostrarLogout) {
-        setLayout(new FlowLayout(FlowLayout.LEFT));
+    private void inicializarComponentes() {
+        // Colores
+        Color mainBG = new Color(34, 34, 59);
+        Color buttonBG = new Color(170, 160, 165);
+        Color secondaryText = new Color(0, 0, 0);
 
-        JButton btnHome = new JButton("Home");
-        btnHome.addActionListener(e -> controlador.mostrarHome());
+        setBackground(mainBG);
+        setPreferredSize(new Dimension(0, 72));
+        setLayout(new GridLayout(1, 2));
 
-        JButton btnMyList = new JButton("Mi Lista");
+        //region PANEL IZQUIERDO (Logo)
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new GridLayout(1, 2));
+        leftPanel.setBackground(mainBG);
+
+        JPanel subLogo = new JPanel();
+        JPanel subLogoUseless = new JPanel();
+
+        subLogo.setBackground(mainBG);
+        subLogoUseless.setBackground(mainBG);
+        subLogo.setLayout(new GridBagLayout());
+
+        // Logo
+        URL urlLogo = Cabecera.class.getResource("/imagenes/logo.png");
+        ImageIcon logoIcon = new ImageIcon(urlLogo);
+        Image imgLogo = logoIcon.getImage().getScaledInstance(220, 40, Image.SCALE_SMOOTH);
+        logoIcon = new ImageIcon(imgLogo);
+
+        JLabel logo = new JLabel(logoIcon);
+        logo.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        logo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                controlador.mostrarHome();
+            }
+        });
+        subLogo.add(logo);
+
+        leftPanel.add(subLogo);
+        leftPanel.add(subLogoUseless);
+        //endregion
+
+        //region PANEL DERECHO (Botones)
+        JPanel rightPanel = new JPanel();
+        rightPanel.setBackground(mainBG);
+        rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 15, 15));
+
+        // Botón Mi Lista (con icono)
+        JButton btnMyList = new JButton();
+        URL urlShopping = Cabecera.class.getResource("/imagenes/icons/shoppingIcon.png");
+        ImageIcon shoppingIcon = new ImageIcon(urlShopping);
+        Image imgShopping = shoppingIcon.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+        btnMyList.setIcon(new ImageIcon(imgShopping));
+        btnMyList.setBackground(buttonBG);
+        btnMyList.setFocusPainted(false);
+        btnMyList.setBorderPainted(false);
+        btnMyList.setPreferredSize(new Dimension(50, 50));
+        btnMyList.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnMyList.addActionListener(e -> controlador.mostrarMyList());
 
-        JButton btnAccount = new JButton("Cuenta");
+        // Botón Mi Perfil (con foto y texto)
+        JButton btnAccount = new JButton("Mi Perfil");
+        URL urlUser = Cabecera.class.getResource("/imagenes/icons/userIcon.png");
+        ImageIcon userIcon = new ImageIcon(urlUser);
+        Image imgUser = userIcon.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+
+        // Crear imagen redonda
+        ImageIcon roundedIcon = createRoundedIcon(imgUser, 32);
+        btnAccount.setIcon(roundedIcon);
+
+        btnAccount.setFont(new Font("Roboto", Font.BOLD, 16));
+        btnAccount.setForeground(secondaryText);
+        btnAccount.setBackground(buttonBG);
+        btnAccount.setFocusPainted(false);
+        btnAccount.setBorderPainted(false);
+        btnAccount.setPreferredSize(new Dimension(150, 50));
+        btnAccount.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnAccount.addActionListener(e -> controlador.mostrarAccount());
 
-        add(btnHome);
-        add(btnMyList);
-        add(btnAccount);
+        rightPanel.add(btnMyList);
+        rightPanel.add(btnAccount);
+        //endregion
 
-        // Si se pide, agregar botón de Logout
-        if (mostrarLogout) {
-            JButton btnLogout = new JButton("Cerrar Sesión");
-            btnLogout.addActionListener(e -> controlador.cerrarSesion());
-            add(btnLogout);
-        }
+        add(leftPanel);
+        add(rightPanel);
+    }
+
+    /**
+     * Crea un icono redondo a partir de una imagen
+     */
+    private ImageIcon createRoundedIcon(Image img, int diameter) {
+        java.awt.image.BufferedImage rounded = new java.awt.image.BufferedImage(
+                diameter, diameter, java.awt.image.BufferedImage.TYPE_INT_ARGB
+        );
+
+        Graphics2D g2 = rounded.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g2.setClip(new java.awt.geom.Ellipse2D.Float(0, 0, diameter, diameter));
+        g2.drawImage(img, 0, 0, diameter, diameter, null);
+        g2.dispose();
+
+        return new ImageIcon(rounded);
     }
 }
